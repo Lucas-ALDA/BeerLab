@@ -4,8 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import HomePrep from './HomePrep';
 
-
 const HomeScreen = () => {
+
   return (
     <View style={styles.container}>
       <View style={styles.background}>
@@ -14,7 +14,7 @@ const HomeScreen = () => {
       <View style={styles.overlay} />
       <View style={styles.contentContainer}>
         <View style={styles.mainContainer} />
-        <HomePrep />
+        <HomePrep/>
         <View style={styles.footer}>
           <TouchableOpacity style={styles.footerButton}>
             <View style={styles.iconBackground}>

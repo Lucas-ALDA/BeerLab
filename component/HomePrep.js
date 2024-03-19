@@ -1,7 +1,6 @@
-// HomePrep.js
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import postApi from '../API/postApi';
+import axios from 'axios';
 
 const HomePrep = () => {
   const [data, setData] = useState(null);
@@ -9,7 +8,8 @@ const HomePrep = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await postApi.get('');
+        const response = await axios.get('https://automator.benazouz-ouilem.com/webhook/data');
+
         setData(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération des données de l\'API :', error);
@@ -24,10 +24,10 @@ const HomePrep = () => {
       <Text style={styles.label}>Données de l'API :</Text>
       {data ? (
         <View style={styles.dataContainer}>
-          <Text>Batterie : {data.battery}</Text>
-          <Text>Gravité : {data.gravity}</Text>
-          <Text>Température : {data.temperature}</Text>
-          <Text>Inclinaison : {data.tilt}</Text>
+          <Text>Batterie : {data[0].body.battery}</Text>
+          <Text>Gravité : {data[0].body.gravity}</Text>
+          <Text>Température : {data[0].body.temperature}</Text>
+          <Text>Inclinaison : {data[0].body.tilt}</Text>
         </View>
       ) : (
         <Text>Chargement des données...</Text>
