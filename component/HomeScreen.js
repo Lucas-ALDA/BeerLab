@@ -16,13 +16,13 @@ const HomeScreen = () => {
         <View style={styles.mainContainer} />
         <HomePrep/>
         <View style={styles.footer}>
-          <TouchableOpacity style={styles.footerButton}>
+          <TouchableOpacity style={styles.footerButton} onPress={() => navigation.navigate('Home')}>
             <View style={styles.iconBackground}>
               <FontAwesome5 name="home" size={24} color="black"/>
             </View>
             <Text style={styles.footerButtonText}>Dashboard</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.footerButton}>
+          <TouchableOpacity style={styles.footerButton} onPress={() => navigation.navigate('Add')}>
             <View style={styles.iconBackground}>
               <FontAwesome5 name="plus" size={24} color="black"/>
             </View>

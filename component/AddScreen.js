@@ -1,9 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-const SettingsScreen = () => {
+const AddScreen = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
@@ -15,21 +15,6 @@ const SettingsScreen = () => {
         <View style={styles.mainContainer}>
           <TouchableOpacity style={[styles.option, styles.backButton]} onPress={() => navigation.navigate('Home')}>
             <FontAwesome5 name="arrow-left" size={20} color="#1B1B1B" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('ResetPassword')}>
-            <View style={styles.iconBackground}>
-              <FontAwesome5 name="key" size={20} color="#1B1B1B" />
-            </View>
-            <Text style={[styles.optionText, { fontSize: 18 }]}>Modifier le mot de passe</Text>
-          </TouchableOpacity>
-          
-          <View style={styles.separator} />
-          <TouchableOpacity style={[styles.option, styles.logoutButton]} onPress={() => navigation.navigate('Login')}>
-            <View style={[styles.iconBackground]}>
-              <FontAwesome5 name="sign-out-alt" size={20} color="#1B1B1B" />
-            </View>
-            <Text style={[styles.optionText, { fontSize: 18 }]}>Déconnexion</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -62,13 +47,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
-  iconBackground: {
-    width: 40,
-    height: 40,
-    borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   mainContainer: {
     position: 'absolute',
     top: 170,
@@ -86,23 +64,48 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
-  optionText: {
+  inputView: {
+    width: '100%',
+    marginBottom: 20,
+  },
+  inputLabel: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 17,
+    marginBottom: 5,
     fontFamily: 'Nunito-Bold',
-    marginLeft: 5,
+  },
+  inputText: {
+    color: '#111111',
+    fontSize: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+    paddingBottom: 5,
+    fontFamily: 'Nunito-Regular',
+  },
+  inputLine: {
+    backgroundColor: 'black',
+  },
+  loginBtn: {
+    width: '100%',
+    backgroundColor: 'black',
+    borderRadius: 20,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  loginText: {
+    color: 'white',
+    fontSize: 17,
+    fontWeight: 'bold',
+    fontFamily: 'Nunito-Bold',
   },
   separator: {
     width: '100%',
     height: 1,
     backgroundColor: '#000000',
     marginBottom: 20,
-  },
-  logoutButton: {
-    position: 'absolute',
-    bottom: 10,
-    marginLeft: 5,
-    border: 1,
-    borderColor: '1B1B1B',
-    width: '100%',
   },
   backButton: {
     position: 'absolute',
@@ -111,4 +114,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SettingsScreen;
+export default AddScreen;

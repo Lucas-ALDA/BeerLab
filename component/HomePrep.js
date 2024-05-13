@@ -9,7 +9,7 @@ const HomePrep = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://automator.benazouz-ouilem.com/webhook/data');
+        const response = await axios.get('https://beerlab.jamy-app.fr/api/api/');
         setData(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération des données de l\'API :', error);
@@ -23,11 +23,9 @@ const HomePrep = () => {
     <View style={styles.container}>
       {data ? (
         <View style={styles.card}>
-          {/* Vue pour l'icône de la cuve */}
           <View style={styles.iconContainer}>
             <FontAwesome5 name="beer" size={60} color="#fff" />
           </View>
-          {/* Vue pour les données */}
           <View style={styles.dataContainer}>
             <View style={styles.cardContent}>
               <Text style={styles.cardLabel}>Batterie :</Text>

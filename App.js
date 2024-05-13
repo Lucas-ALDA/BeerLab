@@ -6,6 +6,8 @@ import LoginScreen from './component/LoginScreen';
 import RegisterScreen from './component/RegisterScreen';
 import HomeScreen from './component/HomeScreen';
 import SettingsScreen from './component/SettingsScreen';
+import ResetPasswordScreen from './component/ResetPasswordScreen';
+import AddScreen from './component/AddScreen';
 
 // Fonction pour charger les polices asynchrones
 async function loadFonts() {
@@ -25,6 +27,8 @@ function AppNavigation() {
         <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Add" component={AddScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
