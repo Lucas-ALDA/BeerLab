@@ -5,7 +5,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import HomePrep from './HomePrep';
 
 const HomeScreen = () => {
-
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.background}>
@@ -28,7 +28,7 @@ const HomeScreen = () => {
             </View>
             <Text style={styles.footerButtonText}>Ajouter</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.footerButton}>
+          <TouchableOpacity style={styles.footerButton} onPress={() => navigation.navigate('Settings')}>
             <View style={styles.iconBackground}>
               <FontAwesome5 name="cog" size={24} color="black"/>
             </View>
@@ -85,8 +85,8 @@ const styles = StyleSheet.create({
   iconBackground: {
     width: 40,
     height: 40,
-    backgroundColor: '#E8D038',
-    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#000000',
     justifyContent: 'center',
     alignItems: 'center',
   },
