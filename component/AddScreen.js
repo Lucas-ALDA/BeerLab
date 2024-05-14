@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 const AddScreen = () => {
   const navigation = useNavigation();
+  const [ispindleInfo, setIspindleInfo] = useState({
+    name: '',
+    id: '',
+    // Ajoutez d'autres champs selon les besoins (par exemple: temperature, gravité, etc.)
+  });
+
+  const handleInputChange = (key, value) => {
+    setIspindleInfo({ ...ispindleInfo, [key]: value });
+  };
+
+  const handleAddIspindle = () => {
+    // Ajoutez ici la logique pour soumettre les informations de l'iSpindle
+    console.log('Informations de l\'iSpindle ajoutées :', ispindleInfo);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.background}>
@@ -15,6 +30,30 @@ const AddScreen = () => {
         <View style={styles.mainContainer}>
           <TouchableOpacity style={[styles.option, styles.backButton]} onPress={() => navigation.navigate('Home')}>
             <FontAwesome5 name="arrow-left" size={20} color="#1B1B1B" />
+          </TouchableOpacity>
+
+          <View style={styles.inputView}>
+            <Text style={styles.inputLabel}>Nom de l'iSpindle</Text>
+            <TextInput
+              style={styles.inputText}
+              onChangeText={(text) => handleInputChange('name', text)}
+              value={ispindleInfo.name}
+            />
+            <View style={styles.inputLine}/>
+          </View>
+          <View style={styles.inputView}>
+            <Text style={styles.inputLabel}>ID de l'iSpindle</Text>
+            <TextInput
+              style={styles.inputText}
+              onChangeText={(text) => handleInputChange('id', text)}
+              value={ispindleInfo.id}
+            />
+            <View style={styles.inputLine}/>
+          </View>
+          {/* Ajoutez d'autres champs d'entrée ici selon les besoins */}
+
+          <TouchableOpacity style={styles.loginBtn} onPress={handleAddIspindle}>
+            <Text style={styles.loginText}>Ajouter iSpindle</Text>
           </TouchableOpacity>
         </View>
       </View>
