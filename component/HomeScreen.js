@@ -22,11 +22,17 @@ const HomeScreen = () => {
             </View>
             <Text style={styles.footerButtonText}>Dashboard</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.footerButton} onPress={() => navigation.navigate('Add')}>
+          <TouchableOpacity style={styles.footerButton} onPress={() => navigation.navigate('Tank')}>
             <View style={styles.iconBackground}>
               <FontAwesome5 name="plus" size={24} color="black"/>
             </View>
             <Text style={styles.footerButtonText}>Ajouter</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.footerButton} onPress={() => navigation.navigate('Recipes')}>
+            <View style={styles.iconBackground}>
+              <FontAwesome5 name="book" size={24} color="black"/>
+            </View>
+            <Text style={styles.footerButtonText}>Recettes</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.footerButton} onPress={() => navigation.navigate('Settings')}>
             <View style={styles.iconBackground}>

@@ -19,11 +19,17 @@ const SettingsScreen = () => {
 
           <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('ResetPassword')}>
             <View style={styles.iconBackground}>
-              <FontAwesome5 name="key" size={20} color="#1B1B1B" />
+              <FontAwesome5 name="key" size={20} color="#1B1B1B"/>
             </View>
             <Text style={[styles.optionText, { fontSize: 18 }]}>Modifier le mot de passe</Text>
           </TouchableOpacity>
-          
+          <View style={styles.separator}/>
+          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('AddObject')}>
+            <View style={styles.iconBackground}>
+              <FontAwesome5 name="plus" size={20} color="#1B1B1B" />
+            </View>
+            <Text style={[styles.optionText, { fontSize: 18 }]}>Ajouter votre iSpindle</Text>
+          </TouchableOpacity>
           <View style={styles.separator} />
           <TouchableOpacity style={[styles.option, styles.logoutButton]} onPress={() => navigation.navigate('Login')}>
             <View style={[styles.iconBackground]}>

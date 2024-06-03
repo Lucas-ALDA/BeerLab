@@ -1,24 +1,13 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput, Picker } from 'react-native';
+import { useNavigation,  useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-const AddScreen = () => {
+const TankScreen = () => {
   const navigation = useNavigation();
-  const [ispindleInfo, setIspindleInfo] = useState({
-    name: '',
-    id: '',
-    // Ajoutez d'autres champs selon les besoins (par exemple: temperature, gravité, etc.)
-  });
-
-  const handleInputChange = (key, value) => {
-    setIspindleInfo({ ...ispindleInfo, [key]: value });
-  };
-
-  const handleAddIspindle = () => {
-    // Ajoutez ici la logique pour soumettre les informations de l'iSpindle
-    console.log('Informations de l\'iSpindle ajoutées :', ispindleInfo);
-  };
+  const route = useRoute();
+  const { recipes } = route.params || {};
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
 
   return (
     <View style={styles.container}>
@@ -33,27 +22,23 @@ const AddScreen = () => {
           </TouchableOpacity>
 
           <View style={styles.inputView}>
-            <Text style={styles.inputLabel}>Nom de l'iSpindle</Text>
-            <TextInput
-              style={styles.inputText}
-              onChangeText={(text) => handleInputChange('name', text)}
-              value={ispindleInfo.name}
-            />
+            <Text style={styles.inputLabel}>Nom de la cuve</Text>
+            <TextInput style={styles.inputText} secureTextEntry={true}/>
             <View style={styles.inputLine}/>
           </View>
-          <View style={styles.inputView}>
-            <Text style={styles.inputLabel}>ID de l'iSpindle</Text>
-            <TextInput
-              style={styles.inputText}
-              onChangeText={(text) => handleInputChange('id', text)}
-              value={ispindleInfo.id}
-            />
-            <View style={styles.inputLine}/>
-          </View>
-          {/* Ajoutez d'autres champs d'entrée ici selon les besoins */}
 
-          <TouchableOpacity style={styles.loginBtn} onPress={handleAddIspindle}>
-            <Text style={styles.loginText}>Ajouter iSpindle</Text>
+          <View style={styles.inputView}>
+            <Text style={styles.inputLabel}>Ma recette</Text>
+              <Picker
+                selectedValue={selectedRecipe}
+                onValueChange={(itemValue, itemIndex) => setSelectedRecipe(itemValue)}>
+                <Picker.Item label="Sélectionnez une recette" value={null} />
+              </Picker>
+            <View style={styles.inputLine}/>
+          </View>
+
+          <TouchableOpacity style={styles.loginBtn}>
+            <Text style={styles.loginText}>Ajouter la cuve</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -140,6 +125,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Nunito-Bold',
   },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  checkbox: {
+    marginRight: 10,
+  },
+  checkboxLabel: {
+    color: 'black',
+    fontSize: 15,
+    fontFamily: 'Nunito-Regular',
+  },
   separator: {
     width: '100%',
     height: 1,
@@ -153,4 +151,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddScreen;
+export default TankScreen;
