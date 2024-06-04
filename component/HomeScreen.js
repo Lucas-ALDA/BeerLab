@@ -22,7 +22,7 @@ const HomeScreen = () => {
             </View>
             <Text style={styles.footerButtonText}>Dashboard</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.footerButton} onPress={() => navigation.navigate('Tank')}>
+          <TouchableOpacity style={styles.footerButton} onPress={() => navigation.navigate('Tanks')}>
             <View style={styles.iconBackground}>
               <FontAwesome5 name="plus" size={24} color="black"/>
             </View>

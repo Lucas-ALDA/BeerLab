@@ -1,13 +1,27 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput, Picker } from 'react-native';
-import { useNavigation,  useRoute } from '@react-navigation/native';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image  } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-const TankScreen = () => {
+const AddRecipesScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { recipes } = route.params || {};
-  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const { addRecipe } = route.params || {};
+  const [recipeName, setRecipeName] = useState('');
+  const [duration, setDuration] = useState('');
+  const [description, setDescription] = useState('');
+
+  const handleAddRecipe = () => {
+    if (recipeName && duration && description) {
+      const recipe = {
+        name: recipeName,
+        duration: duration,
+        description: description,
+      };
+      addRecipe(recipe);
+      navigation.goBack();
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -17,28 +31,27 @@ const TankScreen = () => {
       <View style={styles.overlay} />
       <View style={styles.contentContainer}>
         <View style={styles.mainContainer}>
-          <TouchableOpacity style={[styles.option, styles.backButton]} onPress={() => navigation.navigate('Home')}>
-            <FontAwesome5 name="arrow-left" size={20} color="#1B1B1B" />
+          <TouchableOpacity style={[styles.option, styles.backButton]} onPress={() => navigation.navigate('Recipes')}>
+          <FontAwesome5 name="arrow-left" size={20} color="#1B1B1B" />
           </TouchableOpacity>
 
           <View style={styles.inputView}>
-            <Text style={styles.inputLabel}>Nom de la cuve</Text>
-            <TextInput style={styles.inputText} secureTextEntry={true}/>
-            <View style={styles.inputLine}/>
+            <Text style={styles.inputLabel}>Nom de la recette :</Text>
+            <TextInput style={styles.inputText} value={recipeName} onChangeText={setRecipeName}/>
           </View>
 
           <View style={styles.inputView}>
-            <Text style={styles.inputLabel}>Ma recette</Text>
-              <Picker
-                selectedValue={selectedRecipe}
-                onValueChange={(itemValue, itemIndex) => setSelectedRecipe(itemValue)}>
-                <Picker.Item label="Sélectionnez une recette" value={null} />
-              </Picker>
-            <View style={styles.inputLine}/>
+            <Text style={styles.inputLabel}>Durée :</Text>
+            <TextInput style={styles.inputText} value={duration} onChangeText={setDuration}/>
           </View>
 
-          <TouchableOpacity style={styles.loginBtn}>
-            <Text style={styles.loginText}>Ajouter la cuve</Text>
+          <View style={styles.inputView}>
+            <Text style={styles.inputLabel}>Description :</Text>
+            <TextInput style={[styles.inputText, styles.descriptionInput]} multiline numberOfLines={2} value={description} onChangeText={setDescription}/>
+          </View>
+
+          <TouchableOpacity style={styles.loginBtn} onPress={handleAddRecipe}>
+            <Text style={styles.loginText}>Ajouter la recette</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -151,4 +164,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TankScreen;
+export default AddRecipesScreen;

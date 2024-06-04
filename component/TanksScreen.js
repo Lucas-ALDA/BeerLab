@@ -3,17 +3,17 @@ import { StyleSheet, View, Text, TouchableOpacity, Image, FlatList } from 'react
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-const RecipesScreen = () => {
+const TanksScreen = () => {
   const navigation = useNavigation();
-  const [recipes, setRecipes] = useState([]);
+  const [tanks, setTanks] = useState([]);
 
-  const addRecipe = (recipe) => {
-    setRecipes([...recipes, recipe]);
+  const addTank = (tank) => {
+    setTanks([...tanks, tank]);
   };
 
-  const deleteRecipe = (index) => {
-    const newRecipes = recipes.filter((_, i) => i !== index);
-    setRecipes(newRecipes);
+  const deleteTank = (index) => {
+    const newTanks = tanks.filter((_, i) => i !== index);
+    setTanks(newTanks);
   };
 
   return (
@@ -21,23 +21,23 @@ const RecipesScreen = () => {
       <View style={styles.background}>
         <Image source={require('../assets/beerlab-logo.png')} style={styles.logo} />
       </View>
-      <View style={styles.overlay}/>
+      <View style={styles.overlay} />
       <View style={styles.contentContainer}>
         <View style={styles.mainContainer}>
           <TouchableOpacity style={[styles.option, styles.backButton]} onPress={() => navigation.navigate('Home')}>
             <FontAwesome5 name="arrow-left" size={20} color="#1B1B1B" />
           </TouchableOpacity>
-          <Text style={styles.inputLabel}>Liste des recettes :</Text>
-            <FlatList data={recipes} renderItem={({ item, index }) => (
-                <View style={styles.recipeItem}>
-                  <Text style={styles.recipeText}>{item.name}</Text>
-                  <TouchableOpacity onPress={() => deleteRecipe(index)}>
-                    <FontAwesome5 name="times" size={20} color="red" />
-                  </TouchableOpacity>
-                </View>
-              )}
-              keyExtractor={(item, index) => index.toString()}/>
-          <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddRecipes', { addRecipe })}>
+          <Text style={styles.inputLabel}>Liste des cuves :</Text>
+          <FlatList data={tanks} renderItem={({ item, index }) => (
+              <View style={styles.tankItem}>
+                <Text style={styles.tankText}>{item}</Text>
+                <TouchableOpacity onPress={() => deleteTank(index)}>
+                  <FontAwesome5 name="times" size={20} color="red" />
+                </TouchableOpacity>
+              </View>
+            )}
+            keyExtractor={(item, index) => index.toString()}/>
+          <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddTanks', { addTank })}>
             <FontAwesome5 name="plus" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
@@ -88,61 +88,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
-  inputView: {
-    width: '100%',
-    marginBottom: 20,
-  },
-  inputLabel: {
-    color: 'black',
-    fontWeight: 'bold',
-    fontSize: 17,
-    marginBottom: 5,
-    fontFamily: 'Nunito-Bold',
-  },
-  inputText: {
-    color: '#111111',
-    fontSize: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: 'black',
-    paddingBottom: 5,
-    fontFamily: 'Nunito-Regular',
-  },
-  inputLine: {
-    backgroundColor: 'black',
-  },
-  loginBtn: {
-    width: '100%',
-    backgroundColor: 'black',
-    borderRadius: 20,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  loginText: {
-    color: 'white',
-    fontSize: 17,
-    fontWeight: 'bold',
-    fontFamily: 'Nunito-Bold',
-  },
-  checkboxContainer: {
+  tankItem: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
-  checkbox: {
-    marginRight: 10,
-  },
-  checkboxLabel: {
-    color: 'black',
-    fontSize: 15,
+  tankText: {
+    fontSize: 17,
     fontFamily: 'Nunito-Regular',
-  },
-  separator: {
-    width: '100%',
-    height: 1,
-    backgroundColor: '#000000',
-    marginBottom: 20,
   },
   backButton: {
     position: 'absolute',
@@ -161,6 +117,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     elevation: 8,
   },
+  inputLabel: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 17,
+    marginBottom: 5,
+    fontFamily: 'Nunito-Bold',
+  },
 });
 
-export default RecipesScreen;
+export default TanksScreen;

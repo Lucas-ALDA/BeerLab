@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput, Picker } from 'react-native';
+import { useNavigation,  useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-const AddObjectScreen = () => {
+const AddTanksScreen = () => {
   const navigation = useNavigation();
-  const [ispindleInfo, setIspindleInfo] = useState({
-    name: '',
-    id: '',
-    // Ajoutez d'autres champs selon les besoins (par exemple: temperature, gravité, etc.)
-  });
+  const route = useRoute();
+  const { addTank } = route.params || {};
+  const [tankName, setTankName] = useState('');
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
 
-  const handleInputChange = (key, value) => {
-    setIspindleInfo({ ...ispindleInfo, [key]: value });
-  };
+  // Hardcoded list of recipes for testing
+  const recipes = ['Recette 1', 'Recette 2', 'Recette 3'];
 
-  const handleAddIspindle = () => {
+  const handleAddTank = () => {
+    if (tankName && selectedRecipe) {
+      addTank(`${tankName} - ${selectedRecipe}`);
+      navigation.goBack();
+    }
   };
 
   return (
@@ -26,31 +28,32 @@ const AddObjectScreen = () => {
       <View style={styles.overlay} />
       <View style={styles.contentContainer}>
         <View style={styles.mainContainer}>
-          <TouchableOpacity style={[styles.option, styles.backButton]} onPress={() => navigation.navigate('Settings')}>
+          <TouchableOpacity style={[styles.option, styles.backButton]} onPress={() => navigation.navigate('Home')}>
             <FontAwesome5 name="arrow-left" size={20} color="#1B1B1B" />
           </TouchableOpacity>
 
           <View style={styles.inputView}>
-            <Text style={styles.inputLabel}>Nom de l'iSpindle</Text>
-            <TextInput
-              style={styles.inputText}
-              onChangeText={(text) => handleInputChange('name', text)}
-              value={ispindleInfo.name}
-            />
-            <View style={styles.inputLine}/>
-          </View>
-          <View style={styles.inputView}>
-            <Text style={styles.inputLabel}>ID de l'iSpindle</Text>
-            <TextInput
-              style={styles.inputText}
-              onChangeText={(text) => handleInputChange('id', text)}
-              value={ispindleInfo.id}
-            />
+            <Text style={styles.inputLabel}>Nom de la cuve</Text>
+            <TextInput style={styles.inputText} value={tankName} onChangeText={setTankName}/>
             <View style={styles.inputLine}/>
           </View>
 
-          <TouchableOpacity style={styles.loginBtn} onPress={handleAddIspindle}>
-            <Text style={styles.loginText}>Ajouter iSpindle</Text>
+          <View style={styles.inputView}>
+            <Text style={styles.inputLabel}>Ma recette</Text>
+            <Picker
+              selectedValue={selectedRecipe}
+              onValueChange={(itemValue) => setSelectedRecipe(itemValue)}
+            >
+              <Picker.Item label="Sélectionnez une recette" value={null} />
+              {recipes.map((recipe, index) => (
+                <Picker.Item key={index} label={recipe} value={recipe} />
+              ))}
+            </Picker>
+            <View style={styles.inputLine} />
+          </View>
+
+          <TouchableOpacity style={styles.loginBtn} onPress={handleAddTank} >
+            <Text style={styles.loginText}>Ajouter la cuve</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -137,6 +140,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Nunito-Bold',
   },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  checkbox: {
+    marginRight: 10,
+  },
+  checkboxLabel: {
+    color: 'black',
+    fontSize: 15,
+    fontFamily: 'Nunito-Regular',
+  },
   separator: {
     width: '100%',
     height: 1,
@@ -150,4 +166,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddObjectScreen;
+export default AddTanksScreen;
