@@ -1,19 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState,  useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RecipesScreen = () => {
   const navigation = useNavigation();
   const [recipes, setRecipes] = useState([]);
 
-  const addRecipe = (recipe) => {
-    setRecipes([...recipes, recipe]);
+   useEffect(() => {
+    const loadRecipes = async () => {
+      try {
+        const storedRecipes = await AsyncStorage.getItem('recipes');
+        if (storedRecipes) {
+          setRecipes(JSON.parse(storedRecipes));
+        }
+      } catch (error) {
+        console.error('Error loading recipes:', error);
+      }
+    };
+
+    loadRecipes();
+  }, []);
+
+  const addRecipe = async (recipe) => {
+    const updatedRecipes = [...recipes, recipe];
+    setRecipes(updatedRecipes);
+
+    // Enregistrer les recettes dans AsyncStorage
+    try {
+      await AsyncStorage.setItem('recipes', JSON.stringify(updatedRecipes));
+    } catch (error) {
+      console.error('Error saving recipes:', error);
+    }
   };
 
-  const deleteRecipe = (index) => {
+  const deleteRecipe = async (index) => {
+    // Supprimer la recette de l'état local
     const newRecipes = recipes.filter((_, i) => i !== index);
     setRecipes(newRecipes);
+
+    // Mettre à jour AsyncStorage
+    try {
+      await AsyncStorage.setItem('recipes', JSON.stringify(newRecipes));
+    } catch (error) {
+      console.error('Error saving recipes:', error);
+    }
+  };
+
+  const editRecipe = (index, updatedRecipe) => {
+    const updatedRecipes = [...recipes];
+    updatedRecipes[index] = updatedRecipe;
+    setRecipes(updatedRecipes);
   };
 
   return (
@@ -27,16 +65,22 @@ const RecipesScreen = () => {
           <TouchableOpacity style={[styles.option, styles.backButton]} onPress={() => navigation.navigate('Home')}>
             <FontAwesome5 name="arrow-left" size={20} color="#1B1B1B" />
           </TouchableOpacity>
-          <Text style={styles.inputLabel}>Liste des recettes :</Text>
-            <FlatList data={recipes} renderItem={({ item, index }) => (
-                <View style={styles.recipeItem}>
-                  <Text style={styles.recipeText}>{item.name}</Text>
-                  <TouchableOpacity onPress={() => deleteRecipe(index)}>
-                    <FontAwesome5 name="times" size={20} color="red" />
-                  </TouchableOpacity>
-                </View>
-              )}
-              keyExtractor={(item, index) => index.toString()}/>
+          <Text style={styles.inputLabel}>Mes recettes</Text>
+          <FlatList
+            data={recipes}
+            renderItem={({ item, index }) => (
+              <View style={styles.recipeItem}>
+                <Text style={styles.recipeText}>{item.name}</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('EditRecipe', { recipeIndex: index, recipe: item, editRecipe: editRecipe })}>
+                  <FontAwesome5 name="edit" size={20} color="green" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => deleteRecipe(index)}>
+                  <FontAwesome5 name="times" size={20} color="red" />
+                </TouchableOpacity>
+              </View>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
           <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddRecipes', { addRecipe })}>
             <FontAwesome5 name="plus" size={20} color="#FFFFFF" />
           </TouchableOpacity>
@@ -95,7 +139,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     color: 'black',
     fontWeight: 'bold',
-    fontSize: 17,
+    fontSize: 20,
     marginBottom: 5,
     fontFamily: 'Nunito-Bold',
   },
@@ -109,6 +153,18 @@ const styles = StyleSheet.create({
   },
   inputLine: {
     backgroundColor: 'black',
+  },
+  recipeItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  recipeText: {
+    fontSize: 17,
+    fontFamily: 'Nunito-Regular',
   },
   loginBtn: {
     width: '100%',

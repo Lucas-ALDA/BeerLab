@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Image, FlatList} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TanksScreen = () => {
   const navigation = useNavigation();
   const [tanks, setTanks] = useState([]);
+
+  useEffect(() => {
+    retrieveTanks();
+  }, []);
+
+  useEffect(() => {
+    storeTanks();
+  }, [tanks]);
 
   const addTank = (tank) => {
     setTanks([...tanks, tank]);
@@ -14,6 +23,31 @@ const TanksScreen = () => {
   const deleteTank = (index) => {
     const newTanks = tanks.filter((_, i) => i !== index);
     setTanks(newTanks);
+  };
+
+  const editTank = (index, updatedTank) => {
+    const updatedTanks = [...tanks];
+    updatedTanks[index] = updatedTank;
+    setTanks(updatedTanks);
+  };
+
+  const storeTanks = async () => {
+    try {
+      await AsyncStorage.setItem('tanks', JSON.stringify(tanks));
+    } catch (error) {
+      console.error('Error storing tanks:', error);
+    }
+  };
+
+  const retrieveTanks = async () => {
+    try {
+      const tanksFromStorage = await AsyncStorage.getItem('tanks');
+      if (tanksFromStorage) {
+        setTanks(JSON.parse(tanksFromStorage));
+      }
+    } catch (error) {
+      console.error('Error retrieving tanks:', error);
+    }
   };
 
   return (
@@ -27,17 +61,23 @@ const TanksScreen = () => {
           <TouchableOpacity style={[styles.option, styles.backButton]} onPress={() => navigation.navigate('Home')}>
             <FontAwesome5 name="arrow-left" size={20} color="#1B1B1B" />
           </TouchableOpacity>
-          <Text style={styles.inputLabel}>Liste des cuves :</Text>
-          <FlatList data={tanks} renderItem={({ item, index }) => (
+          <Text style={styles.inputLabel}>Mes cuves</Text>
+          <FlatList
+            data={tanks}
+            renderItem={({ item, index }) => (
               <View style={styles.tankItem}>
-                <Text style={styles.tankText}>{item}</Text>
+                <Text style={styles.tankText}>{item.tankName}</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('EditTank', { tankIndex: index, tank: item, editTank: editTank })}>
+                  <FontAwesome5 name="edit" size={20} color="green" />
+                </TouchableOpacity>
                 <TouchableOpacity onPress={() => deleteTank(index)}>
                   <FontAwesome5 name="times" size={20} color="red" />
                 </TouchableOpacity>
               </View>
             )}
-            keyExtractor={(item, index) => index.toString()}/>
-          <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddTanks', { addTank })}>
+            keyExtractor={(item, index) => index.toString()}
+          />
+          <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddTanks', { addTank: addTank })}>
             <FontAwesome5 name="plus" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
@@ -120,7 +160,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     color: 'black',
     fontWeight: 'bold',
-    fontSize: 17,
+    fontSize: 20,
     marginBottom: 5,
     fontFamily: 'Nunito-Bold',
   },

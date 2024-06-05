@@ -3,26 +3,27 @@ import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image  } from 'rea
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-const AddRecipesScreen = () => {
+const EditRecipeScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { addRecipe } = route.params || {};
-  const [recipeName, setRecipeName] = useState('');
-  const [duration, setDuration] = useState('');
-  const [description, setDescription] = useState('');
-  const [ingredients, setIngredients] = useState('');
-  const [instructions, setInstructions] = useState('');
+  const { recipeIndex, recipe, editRecipe } = route.params || {};
+  const [recipeName, setRecipeName] = useState(recipe.name);
+  const [duration, setDuration] = useState(recipe.duration.toString());
+  const [description, setDescription] = useState(recipe.description);
+  const [ingredients, setIngredients] = useState(recipe.ingredients);
+  const [instructions, setInstructions] = useState(recipe.instructions);
 
-  const handleAddRecipe = () => {
+  const saveChanges = () => {
     if (recipeName && duration && description && ingredients && instructions) {
-      const recipe = {
+      const editedRecipe = {
+        ...recipe,
         name: recipeName,
-        duration: duration,
+        duration: parseInt(duration),
         description: description,
         ingredients: ingredients,
         instructions: instructions,
       };
-      addRecipe(recipe);
+      editRecipe(recipeIndex, editedRecipe);
       navigation.goBack();
     }
   };
@@ -35,7 +36,7 @@ const AddRecipesScreen = () => {
       <View style={styles.overlay} />
       <View style={styles.contentContainer}>
         <View style={styles.mainContainer}>
-          <TouchableOpacity style={[styles.option, styles.backButton]} onPress={() => navigation.navigate('Recipes')}>
+          <TouchableOpacity style={[styles.option, styles.backButton]} onPress={() => navigation.goBack()}>
             <FontAwesome5 name="arrow-left" size={20} color="#1B1B1B" />
           </TouchableOpacity>
 
@@ -64,8 +65,8 @@ const AddRecipesScreen = () => {
             <TextInput style={[styles.inputText, styles.descriptionInput]} multiline numberOfLines={4} value={instructions} onChangeText={setInstructions}/>
           </View>
 
-          <TouchableOpacity style={styles.loginBtn} onPress={handleAddRecipe}>
-            <Text style={styles.loginText}>Ajouter la recette</Text>
+          <TouchableOpacity style={styles.loginBtn} onPress={saveChanges}>
+            <Text style={styles.loginText}>Enregistrer les modifications</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -134,8 +135,18 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     fontFamily: 'Nunito-Regular',
   },
-  inputLine: {
-    backgroundColor: 'black',
+  datePickerButton: {
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 5,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  datePickerText: {
+    fontSize: 15,
+    color: '#111111',
+    fontFamily: 'Nunito-Regular',
   },
   loginBtn: {
     width: '100%',
@@ -178,4 +189,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddRecipesScreen;
+
+export default EditRecipeScreen;

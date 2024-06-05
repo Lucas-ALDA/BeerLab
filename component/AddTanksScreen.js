@@ -1,29 +1,54 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput, Picker } from 'react-native';
-import { useNavigation,  useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const AddTanksScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { addTank } = route.params || {};
   const [tankName, setTankName] = useState('');
-  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [selectedRecipe, setSelectedRecipe] = useState('');
+  const [status, setStatus] = useState('active');
+  const [beginDate, setBeginDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [showBeginDatePicker, setShowBeginDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
-  // Hardcoded list of recipes for testing
   const recipes = ['Recette 1', 'Recette 2', 'Recette 3'];
 
   const handleAddTank = () => {
-    if (tankName && selectedRecipe) {
-      addTank(`${tankName} - ${selectedRecipe}`);
-      navigation.goBack();
+    if (tankName && selectedRecipe && status && beginDate && endDate) {
+      addTank({
+        tankName,
+        selectedRecipe,
+        status,
+        beginDate,
+        endDate,
+      });
+      navigation.navigate('Tanks');
+    }
+  };
+
+  const onBeginDateChange = (event, selectedDate) => {
+    setShowBeginDatePicker(false);
+    if (selectedDate) {
+      setBeginDate(selectedDate);
+    }
+  };
+
+  const onEndDateChange = (event, selectedDate) => {
+    setShowEndDatePicker(false);
+    if (selectedDate) {
+      setEndDate(selectedDate);
     }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.background}>
-        <Image source={require('../assets/beerlab-logo.png')} style={styles.logo}/>
+        <Image source={require('../assets/beerlab-logo.png')} style={styles.logo} />
       </View>
       <View style={styles.overlay} />
       <View style={styles.contentContainer}>
@@ -34,17 +59,14 @@ const AddTanksScreen = () => {
 
           <View style={styles.inputView}>
             <Text style={styles.inputLabel}>Nom de la cuve</Text>
-            <TextInput style={styles.inputText} value={tankName} onChangeText={setTankName}/>
-            <View style={styles.inputLine}/>
+            <TextInput style={styles.inputText} value={tankName} onChangeText={setTankName} />
+            <View style={styles.inputLine} />
           </View>
 
           <View style={styles.inputView}>
             <Text style={styles.inputLabel}>Ma recette</Text>
-            <Picker
-              selectedValue={selectedRecipe}
-              onValueChange={(itemValue) => setSelectedRecipe(itemValue)}
-            >
-              <Picker.Item label="Sélectionnez une recette" value={null} />
+            <Picker selectedValue={selectedRecipe || ''} onValueChange={(itemValue) => setSelectedRecipe(itemValue)}>
+              <Picker.Item label="Sélectionnez une recette" value="" />
               {recipes.map((recipe, index) => (
                 <Picker.Item key={index} label={recipe} value={recipe} />
               ))}
@@ -52,7 +74,48 @@ const AddTanksScreen = () => {
             <View style={styles.inputLine} />
           </View>
 
-          <TouchableOpacity style={styles.loginBtn} onPress={handleAddTank} >
+          <View style={styles.inputView}>
+            <Text style={styles.inputLabel}>Statut</Text>
+            <Picker selectedValue={status} onValueChange={(itemValue) => setStatus(itemValue)}>
+              <Picker.Item label="Actif" value="active" />
+              <Picker.Item label="Inactif" value="inactive" />
+            </Picker>
+            <View style={styles.inputLine} />
+          </View>
+
+          <View style={styles.inputView}>
+            <Text style={styles.inputLabel}>Date de début</Text>
+            <TouchableOpacity onPress={() => setShowBeginDatePicker(true)} style={styles.datePickerButton}>
+              <Text style={styles.datePickerText}>{beginDate.toLocaleDateString()}</Text>
+            </TouchableOpacity>
+            {showBeginDatePicker && (
+              <DateTimePicker
+                value={beginDate}
+                mode="date"
+                display="default"
+                onChange={onBeginDateChange}
+              />
+            )}
+            <View style={styles.inputLine} />
+          </View>
+
+          <View style={styles.inputView}>
+            <Text style={styles.inputLabel}>Date de fin</Text>
+            <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={styles.datePickerButton}>
+              <Text style={styles.datePickerText}>{endDate.toLocaleDateString()}</Text>
+            </TouchableOpacity>
+            {showEndDatePicker && (
+              <DateTimePicker
+                value={endDate}
+                mode="date"
+                display="default"
+                onChange={onEndDateChange}
+              />
+            )}
+            <View style={styles.inputLine} />
+          </View>
+
+          <TouchableOpacity style={styles.loginBtn} onPress={handleAddTank}>
             <Text style={styles.loginText}>Ajouter la cuve</Text>
           </TouchableOpacity>
         </View>
@@ -90,7 +153,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 170,
     width: '90%',
-    height: '50%',
+    height: '70%',
     backgroundColor: 'white',
     borderRadius: 20,
     paddingTop: 50,
@@ -122,8 +185,18 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     fontFamily: 'Nunito-Regular',
   },
-  inputLine: {
-    backgroundColor: 'black',
+  datePickerButton: {
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 5,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  datePickerText: {
+    fontSize: 15,
+    color: '#111111',
+    fontFamily: 'Nunito-Regular',
   },
   loginBtn: {
     width: '100%',
