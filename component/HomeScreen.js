@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 170,
     width: '90%',
-    height: '100%',
+    height: '75%',
     backgroundColor: 'white',
     borderRadius: 20,
     alignItems: 'center',
