@@ -45,7 +45,7 @@ const AddRecipesScreen = () => {
           </View>
 
           <View style={styles.inputView}>
-            <Text style={styles.inputLabel}>Durée :</Text>
+            <Text style={styles.inputLabel}>Durée (en jours) :</Text>
             <TextInput style={styles.inputText} value={duration} onChangeText={setDuration}/>
           </View>
 

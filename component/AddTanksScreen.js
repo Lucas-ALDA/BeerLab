@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput, Picker } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddTanksScreen = () => {
   const navigation = useNavigation();
@@ -15,9 +16,23 @@ const AddTanksScreen = () => {
   const [endDate, setEndDate] = useState(new Date());
   const [showBeginDatePicker, setShowBeginDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [recipes, setRecipes] = useState([]);
 
-  const recipes = ['Recette 1', 'Recette 2', 'Recette 3'];
+  useEffect(() => {
+    retrieveRecipes();
+  }, []);
 
+  const retrieveRecipes = async () => {
+    try {
+      const storedRecipes = await AsyncStorage.getItem('recipes');
+      if (storedRecipes) {
+        setRecipes(JSON.parse(storedRecipes));
+      }
+    } catch (error) {
+      console.error('Error retrieving recipes:', error);
+    }
+  };
+  
   const handleAddTank = () => {
     if (tankName && selectedRecipe && status && beginDate && endDate) {
       addTank({
@@ -68,7 +83,7 @@ const AddTanksScreen = () => {
             <Picker selectedValue={selectedRecipe || ''} onValueChange={(itemValue) => setSelectedRecipe(itemValue)}>
               <Picker.Item label="Sélectionnez une recette" value="" />
               {recipes.map((recipe, index) => (
-                <Picker.Item key={index} label={recipe} value={recipe} />
+                <Picker.Item key={index} label={recipe.name} value={recipe.name} />
               ))}
             </Picker>
             <View style={styles.inputLine} />

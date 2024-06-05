@@ -8,50 +8,46 @@ const RecipesScreen = () => {
   const navigation = useNavigation();
   const [recipes, setRecipes] = useState([]);
 
-   useEffect(() => {
-    const loadRecipes = async () => {
-      try {
-        const storedRecipes = await AsyncStorage.getItem('recipes');
-        if (storedRecipes) {
-          setRecipes(JSON.parse(storedRecipes));
-        }
-      } catch (error) {
-        console.error('Error loading recipes:', error);
-      }
-    };
-
-    loadRecipes();
+  useEffect(() => {
+    retrieveRecipes();
   }, []);
 
-  const addRecipe = async (recipe) => {
-    const updatedRecipes = [...recipes, recipe];
-    setRecipes(updatedRecipes);
+  useEffect(() => {
+    storeRecipes();
+  }, [recipes]);
 
-    // Enregistrer les recettes dans AsyncStorage
-    try {
-      await AsyncStorage.setItem('recipes', JSON.stringify(updatedRecipes));
-    } catch (error) {
-      console.error('Error saving recipes:', error);
-    }
+  const addRecipe = (recipe) => {
+    setRecipes([...recipes, recipe]);
   };
 
-  const deleteRecipe = async (index) => {
-    // Supprimer la recette de l'état local
+  const deleteRecipe = (index) => {
     const newRecipes = recipes.filter((_, i) => i !== index);
     setRecipes(newRecipes);
-
-    // Mettre à jour AsyncStorage
-    try {
-      await AsyncStorage.setItem('recipes', JSON.stringify(newRecipes));
-    } catch (error) {
-      console.error('Error saving recipes:', error);
-    }
   };
 
   const editRecipe = (index, updatedRecipe) => {
     const updatedRecipes = [...recipes];
     updatedRecipes[index] = updatedRecipe;
     setRecipes(updatedRecipes);
+  };
+
+  const storeRecipes = async () => {
+    try {
+      await AsyncStorage.setItem('recipes', JSON.stringify(recipes));
+    } catch (error) {
+      console.error('Error storing recipes:', error);
+    }
+  };
+
+  const retrieveRecipes = async () => {
+    try {
+      const recipesFromStorage = await AsyncStorage.getItem('recipes');
+      if (recipesFromStorage) {
+        setRecipes(JSON.parse(recipesFromStorage));
+      }
+    } catch (error) {
+      console.error('Error retrieving recipes:', error);
+    }
   };
 
   return (
@@ -71,12 +67,14 @@ const RecipesScreen = () => {
             renderItem={({ item, index }) => (
               <View style={styles.recipeItem}>
                 <Text style={styles.recipeText}>{item.name}</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('EditRecipe', { recipeIndex: index, recipe: item, editRecipe: editRecipe })}>
-                  <FontAwesome5 name="edit" size={20} color="green" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => deleteRecipe(index)}>
-                  <FontAwesome5 name="times" size={20} color="red" />
-                </TouchableOpacity>
+                <View style={styles.iconContainer}>
+                  <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('EditRecipe', { recipeIndex: index, recipe: item, editRecipe: editRecipe })}>
+                    <FontAwesome5 name="edit" size={20} color="#E8D038" />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => deleteRecipe(index)}>
+                    <FontAwesome5 name="times" size={20} color="black" />
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
             keyExtractor={(item, index) => index.toString()}
@@ -165,6 +163,12 @@ const styles = StyleSheet.create({
   recipeText: {
     fontSize: 17,
     fontFamily: 'Nunito-Regular',
+  },
+  iconContainer: {
+    flexDirection: 'row',
+  },
+  iconButton: {
+    marginRight: 10,
   },
   loginBtn: {
     width: '100%',

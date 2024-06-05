@@ -67,12 +67,14 @@ const TanksScreen = () => {
             renderItem={({ item, index }) => (
               <View style={styles.tankItem}>
                 <Text style={styles.tankText}>{item.tankName}</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('EditTank', { tankIndex: index, tank: item, editTank: editTank })}>
-                  <FontAwesome5 name="edit" size={20} color="green" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => deleteTank(index)}>
-                  <FontAwesome5 name="times" size={20} color="red" />
-                </TouchableOpacity>
+                <View style={styles.iconContainer}>
+                  <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('EditTank', { tankIndex: index, tank: item, editTank: editTank })}>
+                    <FontAwesome5 name="edit" size={20} color="#E8D038" />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => deleteTank(index)}>
+                    <FontAwesome5 name="times" size={20} color="black" />
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
             keyExtractor={(item, index) => index.toString()}
@@ -140,10 +142,16 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontFamily: 'Nunito-Regular',
   },
+  iconContainer: {
+    flexDirection: 'row',
+  },
   backButton: {
     position: 'absolute',
     top: 20,
     left: 20,
+  },
+  iconButton: {
+    marginRight: 10,
   },
   addButton: {
     position: 'absolute',
