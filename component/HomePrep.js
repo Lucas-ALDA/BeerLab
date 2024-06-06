@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
       elevation: 5,
       flexDirection: 'row',
       width: 330,
-      height: 330,
+      height: 280,
       marginBottom: 10,
       position: 'relative',
     },
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
       borderRadius: 10,
       padding: 10,
       width: '65%',
-      height: '65%',
+      height: '70%',
     },
     row: {
       flexDirection: 'row',
