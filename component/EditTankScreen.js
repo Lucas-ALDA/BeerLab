@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput, Picker} from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const EditTankScreen = () => {
   const route = useRoute();
@@ -8,9 +8,10 @@ const EditTankScreen = () => {
   const { tankIndex, tank, editTank } = route.params;
 
   const [editedTankName, setEditedTankName] = useState(tank.tankName);
+  const [editedTankStatus, setEditedTankStatus] = useState(tank.status);
 
   const saveChanges = () => {
-    const updatedTank = { ...tank, tankName: editedTankName };
+    const updatedTank = { ...tank, tankName: editedTankName, status: editedTankStatus };
     editTank(tankIndex, updatedTank);
     navigation.goBack();
   };
@@ -23,13 +24,23 @@ const EditTankScreen = () => {
       <View style={styles.overlay} />
       <View style={styles.contentContainer}>
         <View style={styles.mainContainer}>
-          <Text style={styles.inputLabel}>Nom de la cuve :</Text>
-          <TextInput
-            style={styles.inputText}
-            value={editedTankName}
-            onChangeText={setEditedTankName}
-            placeholder="Nom de la cuve"
-          />
+          <View style={styles.inputView}>
+            <Text style={styles.inputLabel}>Nom de la cuve :</Text>
+            <TextInput style={styles.inputText} value={editedTankName} onChangeText={setEditedTankName} placeholder="Nom de la cuve"/>
+          </View>
+          <View style={styles.inputView}>
+            <Text style={styles.inputLabel}>Statut :</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={editedTankStatus}
+                onValueChange={(itemValue) => setEditedTankStatus(itemValue)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Actif" value="active" />
+                <Picker.Item label="Inactif" value="inactive" />
+              </Picker>
+            </View>
+          </View>
           <TouchableOpacity style={styles.loginBtn} onPress={saveChanges}>
             <Text style={styles.loginText}>Enregistrer</Text>
           </TouchableOpacity>

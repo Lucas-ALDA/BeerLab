@@ -103,8 +103,8 @@ const styles = StyleSheet.create({
     width: '90%',
     height: '70%',
     backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
     alignItems: 'center',
   },
 });
