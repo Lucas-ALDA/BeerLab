@@ -14,6 +14,7 @@ import RecipesScreen from './component/RecipesScreen';
 import AddRecipesScreen from './component/AddRecipesScreen';
 import EditTankScreen from './component/EditTankScreen';
 import EditRecipeScreen from './component/EditRecipeScreen';
+import HomePrep from './component/HomePrep';
 
 // Fonction pour charger les polices asynchrones
 async function loadFonts() {
@@ -30,6 +31,7 @@ function AppNavigation() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Prep" component={HomePrep} options={{ headerShown: false }} />
         <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />

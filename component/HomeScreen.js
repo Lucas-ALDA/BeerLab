@@ -13,8 +13,9 @@ const HomeScreen = () => {
       </View>
       <View style={styles.overlay} />
       <View style={styles.contentContainer}>
-        <View style={styles.mainContainer} />
+        <View style={styles.mainContainer}>
         <HomePrep/>
+        </View>
         <View style={styles.footer}>
           <TouchableOpacity style={styles.footerButton} onPress={() => navigation.navigate('Home')}>
             <View style={styles.iconBackground}>
@@ -100,9 +101,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 170,
     width: '90%',
-    height: '75%',
+    height: '70%',
     backgroundColor: 'white',
-    borderRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     alignItems: 'center',
   },
 });

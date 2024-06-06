@@ -1,53 +1,64 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomePrep = () => {
-  const [data, setData] = useState(null);
+  const [tanksData, setTanksData] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('https://beerlab.jamy-app.fr/api/api/');
-        setData(response.data);
-      } catch (error) {
-        console.error('Erreur lors de la récupération des données de l\'API :', error);
-      }
-    };
-
-    fetchData();
+    retrieveTanksData();
   }, []);
+
+  const retrieveTanksData = async () => {
+    try {
+      const tanksDataFromStorage = await AsyncStorage.getItem('tanks');
+      if (tanksDataFromStorage) {
+        setTanksData(JSON.parse(tanksDataFromStorage));
+      }
+    } catch (error) {
+      console.error('Error retrieving tanks data:', error);
+    }
+  };
+
+  const renderItem = ({ item }) => (
+    <View style={styles.card}>
+      <View style={styles.iconContainer}>
+        <FontAwesome5 name="beer" size={60} color="#fff" />
+      </View>
+      <View style={styles.dataContainer}>
+        <View style={styles.cardContent}>
+          <Text style={styles.cardLabel}>Nom de la cuve :</Text>
+          <Text style={styles.cardText}>{item.tankName}</Text>
+        </View>
+        <View style={styles.cardContent}>
+          <Text style={styles.cardLabel}>Recette :</Text>
+          <Text style={styles.cardText}>{item.selectedRecipe}</Text>
+        </View>
+        <View style={styles.cardContent}>
+          <Text style={styles.cardLabel}>Statut :</Text>
+          <Text style={styles.cardText}>{item.status}</Text>
+        </View>
+        <View style={styles.cardContent}>
+          <Text style={styles.cardLabel}>Date de début :</Text>
+          <Text style={styles.cardText}>{item.beginDate}</Text>
+        </View>
+        <View style={styles.cardContent}>
+          <Text style={styles.cardLabel}>Date de fin :</Text>
+          <Text style={styles.cardText}>{item.endDate}</Text>
+        </View>
+      </View>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      {data ? (
-        <View style={styles.card}>
-          <View style={styles.iconContainer}>
-            <FontAwesome5 name="beer" size={60} color="#fff" />
-          </View>
-          <View style={styles.dataContainer}>
-            <View style={styles.cardContent}>
-              <Text style={styles.cardLabel}>Batterie :</Text>
-              <Text style={styles.cardText}>{data[0].body.battery}</Text>
-            </View>
-            <View style={styles.cardContent}>
-              <Text style={styles.cardLabel}>Gravité :</Text>
-              <Text style={styles.cardText}>{data[0].body.gravity}</Text>
-            </View>
-            <View style={styles.cardContent}>
-              <Text style={styles.cardLabel}>Température :</Text>
-              <Text style={styles.cardText}>{data[0].body.temperature}</Text>
-            </View>
-            <View style={styles.cardContent}>
-              <Text style={styles.cardLabel}>Inclinaison :</Text>
-              <Text style={styles.cardText}>{data[0].body.tilt}</Text>
-            </View>
-          </View>
-        </View>
-      ) : (
-        <Text>Chargement des données...</Text>
-      )}
+      <FlatList
+        data={tanksData}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={styles.flatListContent}
+      />
     </View>
   );
 };
@@ -55,9 +66,11 @@ const HomePrep = () => {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: 'flex-start',
+      marginTop: 10,
+      marginLeft: 10,
+    },
+    flatListContent: {
       alignItems: 'center',
-      marginTop: 180,
     },
     card: {
       backgroundColor: '#E8D038',
@@ -72,7 +85,8 @@ const styles = StyleSheet.create({
       shadowRadius: 3.84,
       elevation: 5,
       flexDirection: 'row',
-      width: '145%'
+      width: '97%',
+      marginBottom: 10,
     },
     iconContainer: {
       flex: 1,
