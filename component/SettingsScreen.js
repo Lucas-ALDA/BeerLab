@@ -24,11 +24,11 @@ const SettingsScreen = () => {
             <Text style={[styles.optionText, { fontSize: 18 }]}>Modifier le mot de passe</Text>
           </TouchableOpacity>
           <View style={styles.separator}/>
-          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('AddObject')}>
+          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Object')}>
             <View style={styles.iconBackground}>
-              <FontAwesome5 name="plus" size={20} color="#1B1B1B" />
+              <FontAwesome5 name="tools" size={20} color="#1B1B1B" />
             </View>
-            <Text style={[styles.optionText, { fontSize: 18 }]}>Ajouter votre iSpindle</Text>
+            <Text style={[styles.optionText, { fontSize: 18 }]}>Mon iSpindle</Text>
           </TouchableOpacity>
           <View style={styles.separator} />
           <TouchableOpacity style={[styles.option, styles.logoutButton]} onPress={() => navigation.navigate('Login')}>

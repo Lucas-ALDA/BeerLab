@@ -55,31 +55,38 @@ const RecipesScreen = () => {
       <View style={styles.background}>
         <Image source={require('../assets/beerlab-logo.png')} style={styles.logo} />
       </View>
-      <View style={styles.overlay}/>
+      <View style={styles.overlay} />
       <View style={styles.contentContainer}>
         <View style={styles.mainContainer}>
           <TouchableOpacity style={[styles.option, styles.backButton]} onPress={() => navigation.navigate('Home')}>
             <FontAwesome5 name="arrow-left" size={20} color="#1B1B1B" />
           </TouchableOpacity>
           <Text style={styles.inputLabel}>Mes recettes</Text>
-          <FlatList
-            data={recipes}
-            renderItem={({ item, index }) => (
-              <View style={styles.recipeItem}>
-                <Text style={styles.recipeText}>{item.name}</Text>
-                <View style={styles.iconContainer}>
-                  <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('EditRecipe', { recipeIndex: index, recipe: item, editRecipe: editRecipe })}>
-                    <FontAwesome5 name="edit" size={20} color="#E8D038" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => deleteRecipe(index)}>
-                    <FontAwesome5 name="times" size={20} color="black" />
-                  </TouchableOpacity>
+          {recipes.length > 0 ? (
+            <FlatList
+              data={recipes}
+              renderItem={({ item, index }) => (
+                <View style={styles.recipeItem}>
+                  <Text style={styles.recipeText}>{item.name}</Text>
+                  <View style={styles.iconContainer}>
+                    <TouchableOpacity
+                      style={styles.iconButton}
+                      onPress={() => navigation.navigate('EditRecipe', { recipeIndex: index, recipe: item, editRecipe: editRecipe })}
+                    >
+                      <FontAwesome5 name="edit" size={20} color="#E8D038" />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => deleteRecipe(index)}>
+                      <FontAwesome5 name="times" size={20} color="black" />
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
-          <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddRecipes', { addRecipe })}>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          ) : (
+            <Text style={styles.noRecipesText}>Aucune recette</Text>
+          )}
+          <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddRecipes', { addRecipe: addRecipe })}>
             <FontAwesome5 name="plus" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>

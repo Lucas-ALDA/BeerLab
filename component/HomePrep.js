@@ -79,13 +79,17 @@ const HomePrep = () => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={tanksData}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={[styles.flatListContent]}
-        showsVerticalScrollIndicator={false} 
-      />
+      {tanksData.length > 0 ? (
+        <FlatList
+          data={tanksData}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={[styles.flatListContent]}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <Text style={styles.noTanksText}>Aucune cuve de fermentation active</Text>
+      )}
     </View>
   );
 };
@@ -160,6 +164,15 @@ const styles = StyleSheet.create({
       width: '90%',
       height: 15,
       borderRadius: 5,
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    emptyText: {
+      fontSize: 18,
+      fontFamily: 'Nunito-Bold',
     },
   });
 

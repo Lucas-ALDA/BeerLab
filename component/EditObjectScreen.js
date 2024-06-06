@@ -1,19 +1,32 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput, Picker} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const EditTankScreen = () => {
+const EditObjectScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { tankIndex, tank, editTank } = route.params;
+  const { objectIndex, object, editObject } = route.params;
 
-  const [editedTankName, setEditedTankName] = useState(tank.tankName);
-  const [editedTankStatus, setEditedTankStatus] = useState(tank.status);
+  const [name, setName] = useState(object.name);
+  const [id, setId] = useState(object.id);
+  // Ajoutez d'autres champs selon les besoins
 
-  const saveChanges = () => {
-    const updatedTank = { ...tank, tankName: editedTankName, status: editedTankStatus };
-    editTank(tankIndex, updatedTank);
+  const saveChanges = async () => {
+    const updatedObject = { name, id }; // Ajoutez d'autres champs ici
+    editObject(objectIndex, updatedObject);
+    
+    // Mettez à jour AsyncStorage
+    try {
+      const storedObjects = await AsyncStorage.getItem('ispindles');
+      const objects = storedObjects ? JSON.parse(storedObjects) : [];
+      objects[objectIndex] = updatedObject;
+      await AsyncStorage.setItem('ispindles', JSON.stringify(objects));
+    } catch (error) {
+      console.error('Error updating object:', error);
+    }
+    
     navigation.goBack();
   };
 
@@ -28,23 +41,21 @@ const EditTankScreen = () => {
           <TouchableOpacity style={[styles.option, styles.backButton]} onPress={() => navigation.goBack()}>
             <FontAwesome5 name="arrow-left" size={20} color="#1B1B1B" />
           </TouchableOpacity>
-
           <View style={styles.inputView}>
-            <Text style={styles.inputLabel}>Nom de la cuve :</Text>
-            <TextInput style={styles.inputText} value={editedTankName} onChangeText={setEditedTankName} placeholder="Nom de la cuve"/>
+            <Text style={styles.inputLabel}>Nom de l'iSpindle</Text>
+            <TextInput
+              style={styles.inputText}
+              value={name}
+              onChangeText={setName}
+            />
           </View>
           <View style={styles.inputView}>
-            <Text style={styles.inputLabel}>Statut :</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={editedTankStatus}
-                onValueChange={(itemValue) => setEditedTankStatus(itemValue)}
-                style={styles.picker}
-              >
-                <Picker.Item label="Actif" value="active" />
-                <Picker.Item label="Inactif" value="inactive" />
-              </Picker>
-            </View>
+            <Text style={styles.inputLabel}>ID de l'iSpindle</Text>
+            <TextInput
+              style={styles.inputText}
+              value={id}
+              onChangeText={setId}
+            />
           </View>
           <TouchableOpacity style={styles.loginBtn} onPress={saveChanges}>
             <Text style={styles.loginText}>Enregistrer</Text>
@@ -171,4 +182,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default EditTankScreen;
+export default EditObjectScreen;

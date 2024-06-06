@@ -62,23 +62,27 @@ const TanksScreen = () => {
             <FontAwesome5 name="arrow-left" size={20} color="#1B1B1B" />
           </TouchableOpacity>
           <Text style={styles.inputLabel}>Mes cuves</Text>
-          <FlatList
-            data={tanks}
-            renderItem={({ item, index }) => (
-              <View style={styles.tankItem}>
-                <Text style={styles.tankText}>{item.tankName}</Text>
-                <View style={styles.iconContainer}>
-                  <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('EditTank', { tankIndex: index, tank: item, editTank: editTank })}>
-                    <FontAwesome5 name="edit" size={20} color="#E8D038" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => deleteTank(index)}>
-                    <FontAwesome5 name="times" size={20} color="black" />
-                  </TouchableOpacity>
+          {tanks.length > 0 ? (
+            <FlatList
+              data={tanks}
+              renderItem={({ item, index }) => (
+                <View style={styles.tankItem}>
+                  <Text style={styles.tankText}>{item.tankName}</Text>
+                  <View style={styles.iconContainer}>
+                    <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('EditTank', { tankIndex: index, tank: item, editTank: editTank })}>
+                      <FontAwesome5 name="edit" size={20} color="#E8D038" />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => deleteTank(index)}>
+                      <FontAwesome5 name="times" size={20} color="black" />
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          ) : (
+            <Text>Aucune cuve</Text>
+          )}
           <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddTanks', { addTank: addTank })}>
             <FontAwesome5 name="plus" size={20} color="#FFFFFF" />
           </TouchableOpacity>

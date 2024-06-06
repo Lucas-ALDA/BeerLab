@@ -2,20 +2,29 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddObjectScreen = () => {
   const navigation = useNavigation();
   const [ispindleInfo, setIspindleInfo] = useState({
     name: '',
     id: '',
-    // Ajoutez d'autres champs selon les besoins (par exemple: temperature, gravité, etc.)
   });
 
   const handleInputChange = (key, value) => {
     setIspindleInfo({ ...ispindleInfo, [key]: value });
   };
 
-  const handleAddIspindle = () => {
+  const handleAddIspindle = async () => {
+    try {
+      const storedIspindles = await AsyncStorage.getItem('ispindles');
+      const ispindles = storedIspindles ? JSON.parse(storedIspindles) : [];
+      ispindles.push(ispindleInfo);
+      await AsyncStorage.setItem('ispindles', JSON.stringify(ispindles));
+      navigation.navigate('Object');
+    } catch (error) {
+      console.error('Error adding iSpindle:', error);
+    }
   };
 
   return (
