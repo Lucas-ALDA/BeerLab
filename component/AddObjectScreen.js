@@ -9,6 +9,7 @@ const AddObjectScreen = () => {
   const [ispindleInfo, setIspindleInfo] = useState({
     name: '',
     id: '',
+    password: '',
   });
 
   const handleInputChange = (key, value) => {
@@ -57,7 +58,17 @@ const AddObjectScreen = () => {
             />
             <View style={styles.inputLine}/>
           </View>
-
+          <View style={styles.inputView}>
+            <Text style={styles.inputLabel}>Mot de passe</Text>
+            <TextInput
+              style={styles.inputText}
+              onChangeText={(text) => handleInputChange('password', text)}
+              value={ispindleInfo.password}
+              secureTextEntry={true}
+            />
+            <View style={styles.inputLine}/>
+          </View>
+          
           <TouchableOpacity style={styles.loginBtn} onPress={handleAddIspindle}>
             <Text style={styles.loginText}>Ajouter iSpindle</Text>
           </TouchableOpacity>

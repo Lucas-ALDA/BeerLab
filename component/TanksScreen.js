@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, FlatList} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,14 +7,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const TanksScreen = () => {
   const navigation = useNavigation();
   const [tanks, setTanks] = useState([]);
+  const [fermentingTanks, setFermentingTanks] = useState([]);
 
   useEffect(() => {
     retrieveTanks();
+    retrieveFermentingTanks();
   }, []);
 
   useEffect(() => {
     storeTanks();
   }, [tanks]);
+
+  useEffect(() => {
+    storeFermentingTanks();
+  }, [fermentingTanks]);
 
   const addTank = (tank) => {
     setTanks([...tanks, tank]);
@@ -31,11 +37,25 @@ const TanksScreen = () => {
     setTanks(updatedTanks);
   };
 
+  const startFermentation = (index) => {
+    const tankToFerment = tanks[index];
+    setFermentingTanks([...fermentingTanks, tankToFerment]);
+    navigation.navigate('Home');
+  };
+
   const storeTanks = async () => {
     try {
       await AsyncStorage.setItem('tanks', JSON.stringify(tanks));
     } catch (error) {
       console.error('Error storing tanks:', error);
+    }
+  };
+
+  const storeFermentingTanks = async () => {
+    try {
+      await AsyncStorage.setItem('fermentingTanks', JSON.stringify(fermentingTanks));
+    } catch (error) {
+      console.error('Error storing fermenting tanks:', error);
     }
   };
 
@@ -48,6 +68,21 @@ const TanksScreen = () => {
     } catch (error) {
       console.error('Error retrieving tanks:', error);
     }
+  };
+
+  const retrieveFermentingTanks = async () => {
+    try {
+      const fermentingTanksFromStorage = await AsyncStorage.getItem('fermentingTanks');
+      if (fermentingTanksFromStorage) {
+        setFermentingTanks(JSON.parse(fermentingTanksFromStorage));
+      }
+    } catch (error) {
+      console.error('Error retrieving fermenting tanks:', error);
+    }
+  };
+
+  const isTankInUse = (tank) => {
+    return fermentingTanks.some(fermentingTank => fermentingTank.tankName === tank.tankName);
   };
 
   return (
@@ -68,14 +103,21 @@ const TanksScreen = () => {
               renderItem={({ item, index }) => (
                 <View style={styles.tankItem}>
                   <Text style={styles.tankText}>{item.tankName}</Text>
-                  <View style={styles.iconContainer}>
-                    <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('EditTank', { tankIndex: index, tank: item, editTank: editTank })}>
-                      <FontAwesome5 name="edit" size={20} color="#E8D038" />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => deleteTank(index)}>
-                      <FontAwesome5 name="times" size={20} color="black" />
-                    </TouchableOpacity>
-                  </View>
+                  {isTankInUse(item) ? (
+                    <Text style={styles.inUseText}>En cours d'utilisation</Text>
+                  ) : (
+                    <View style={styles.iconContainer}>
+                      <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('EditTank', { tankIndex: index, tank: item, editTank: editTank })}>
+                        <FontAwesome5 name="edit" size={20} color="#E8D038" />
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.iconButton} onPress={() => deleteTank(index)}>
+                        <FontAwesome5 name="times" size={20} color="black" />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => startFermentation(index)}>
+                        <FontAwesome5 name="play" size={20} color="#E8D038" />
+                      </TouchableOpacity>
+                    </View>
+                  )}
                 </View>
               )}
               keyExtractor={(item, index) => index.toString()}
@@ -175,6 +217,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 5,
     fontFamily: 'Nunito-Bold',
+  },
+  inUseText: {
+    fontSize: 17,
+    fontFamily: 'Nunito-Bold',
+    color: 'red',
   },
 });
 

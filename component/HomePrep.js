@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProgressBar from 'react-native-progress/Bar';
@@ -13,7 +13,7 @@ const HomePrep = () => {
 
   const retrieveTanksData = async () => {
     try {
-      const tanksDataFromStorage = await AsyncStorage.getItem('tanks');
+      const tanksDataFromStorage = await AsyncStorage.getItem('fermentingTanks');
       if (tanksDataFromStorage) {
         setTanksData(JSON.parse(tanksDataFromStorage));
       }
@@ -31,7 +31,21 @@ const HomePrep = () => {
     return (elapsedTime / totalTime) * 100;
   };
 
-  const renderItem = ({ item }) => {
+  const stopFermentation = (index) => {
+    const updatedTanks = tanksData.filter((_, i) => i !== index);
+    setTanksData(updatedTanks);
+    storeFermentingTanks(updatedTanks);
+  };
+
+  const storeFermentingTanks = async (updatedTanks) => {
+    try {
+      await AsyncStorage.setItem('fermentingTanks', JSON.stringify(updatedTanks));
+    } catch (error) {
+      console.error('Error storing fermenting tanks:', error);
+    }
+  };
+
+  const renderItem = ({ item, index }) => {
     return (
       <View style={styles.card}>
         <View style={styles.iconContainer}>
@@ -40,6 +54,9 @@ const HomePrep = () => {
         <View style={styles.dataContainer}>
           <View style={styles.row}>
             <Text style={styles.TitleCuve}>{item.tankName}</Text>
+            <TouchableOpacity onPress={() => stopFermentation(index)} style={styles.stopButton}>
+              <FontAwesome5 name="times" size={20} color="#E8D038" />
+            </TouchableOpacity>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Recette :</Text>
@@ -145,6 +162,7 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       marginRight: 5,
       fontFamily: 'Nunito-Bold',
+      flex: 1,
     },
     label: {
       fontSize: 17,
@@ -173,6 +191,15 @@ const styles = StyleSheet.create({
     emptyText: {
       fontSize: 18,
       fontFamily: 'Nunito-Bold',
+    },
+    stopButton: {
+      marginLeft: 10,
+    },
+    noTanksText: {
+      fontSize: 18,
+      fontFamily: 'Nunito-Bold',
+      textAlign: 'center',
+      marginTop: 20,
     },
   });
 
