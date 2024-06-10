@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput, Picker } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from '@react-native-picker/picker';
 
 const AddTanksScreen = () => {
   const navigation = useNavigation();
@@ -14,12 +15,15 @@ const AddTanksScreen = () => {
   const [status, setStatus] = useState('active');
   const [beginDate, setBeginDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [selectedIspindle, setSelectedIspindle] = useState('');
   const [showBeginDatePicker, setShowBeginDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [recipes, setRecipes] = useState([]);
+  const [ispindles, setIspindles] = useState([]);
 
   useEffect(() => {
     retrieveRecipes();
+    retrieveIspindles();
   }, []);
 
   const retrieveRecipes = async () => {
@@ -32,15 +36,27 @@ const AddTanksScreen = () => {
       console.error('Error retrieving recipes:', error);
     }
   };
-  
+
+  const retrieveIspindles = async () => {
+    try {
+      const storedIspindles = await AsyncStorage.getItem('ispindles');
+      if (storedIspindles) {
+        setIspindles(JSON.parse(storedIspindles));
+      }
+    } catch (error) {
+      console.error('Error retrieving ispindles:', error);
+    }
+  };
+
   const handleAddTank = () => {
-    if (tankName && selectedRecipe && status && beginDate && endDate) {
+    if (tankName && selectedRecipe && status && beginDate && endDate && selectedIspindle) {
       addTank({
         tankName,
         selectedRecipe,
         status,
         beginDate,
         endDate,
+        ispindle: selectedIspindle,
       });
       navigation.navigate('Tanks');
     }
@@ -94,6 +110,17 @@ const AddTanksScreen = () => {
             <Picker selectedValue={status} onValueChange={(itemValue) => setStatus(itemValue)}>
               <Picker.Item label="Actif" value="active" />
               <Picker.Item label="Inactif" value="inactive" />
+            </Picker>
+            <View style={styles.inputLine} />
+          </View>
+
+          <View style={styles.inputView}>
+            <Text style={styles.inputLabel}>iSpindle</Text>
+            <Picker selectedValue={selectedIspindle} onValueChange={(itemValue) => setSelectedIspindle(itemValue)}>
+              <Picker.Item label="Sélectionnez un iSpindle" value="" />
+              {ispindles.map((ispindle, index) => (
+                <Picker.Item key={index} label={ispindle.name} value={ispindle.name} />
+              ))}
             </Picker>
             <View style={styles.inputLine} />
           </View>
@@ -168,7 +195,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 170,
     width: '90%',
-    height: '70%',
+    height: '76%',
     backgroundColor: 'white',
     borderRadius: 20,
     paddingTop: 50,
@@ -183,69 +210,50 @@ const styles = StyleSheet.create({
   },
   inputView: {
     width: '100%',
-    marginBottom: 20,
+    marginBottom: 15,
   },
   inputLabel: {
     color: 'black',
     fontWeight: 'bold',
-    fontSize: 17,
+    fontSize: 15,
     marginBottom: 5,
     fontFamily: 'Nunito-Bold',
   },
   inputText: {
     color: '#111111',
-    fontSize: 15,
+    fontSize: 13,
     borderBottomWidth: 1,
     borderBottomColor: 'black',
-    paddingBottom: 5,
+    paddingBottom: 2,
     fontFamily: 'Nunito-Regular',
   },
   datePickerButton: {
     borderWidth: 1,
     borderColor: 'black',
     borderRadius: 5,
-    padding: 10,
+    padding: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
   datePickerText: {
-    fontSize: 15,
+    fontSize: 13,
     color: '#111111',
     fontFamily: 'Nunito-Regular',
   },
   loginBtn: {
     width: '100%',
     backgroundColor: 'black',
-    borderRadius: 20,
-    height: 50,
+    borderRadius: 15,
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: 15,
   },
   loginText: {
     color: 'white',
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: 'bold',
     fontFamily: 'Nunito-Bold',
-  },
-  checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  checkbox: {
-    marginRight: 10,
-  },
-  checkboxLabel: {
-    color: 'black',
-    fontSize: 15,
-    fontFamily: 'Nunito-Regular',
-  },
-  separator: {
-    width: '100%',
-    height: 1,
-    backgroundColor: '#000000',
-    marginBottom: 20,
   },
   backButton: {
     position: 'absolute',

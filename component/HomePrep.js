@@ -3,13 +3,21 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProgressBar from 'react-native-progress/Bar';
+import axios from 'axios';
 
 const HomePrep = () => {
   const [tanksData, setTanksData] = useState([]);
+  const [additionalData, setAdditionalData] = useState({});
 
   useEffect(() => {
     retrieveTanksData();
   }, []);
+
+  useEffect(() => {
+    if (tanksData.length > 0) {
+      fetchAdditionalData();
+    }
+  }, [tanksData]);
 
   const retrieveTanksData = async () => {
     try {
@@ -19,6 +27,20 @@ const HomePrep = () => {
       }
     } catch (error) {
       console.error('Error retrieving tanks data:', error);
+    }
+  };
+
+  const fetchAdditionalData = async () => {
+    try {
+      const response = await axios.get('https://beerlab.jamy-app.fr/api/api/');
+      const fetchedData = response.data;
+      const formattedData = fetchedData.reduce((acc, data) => {
+        acc[data.tankName] = data;
+        return acc;
+      }, {});
+      setAdditionalData(formattedData);
+    } catch (error) {
+      console.error('Error fetching additional data:', error);
     }
   };
 
@@ -46,11 +68,10 @@ const HomePrep = () => {
   };
 
   const renderItem = ({ item, index }) => {
+    const { gravity, temperature, tilt } = additionalData[item.tankName] || {};
+
     return (
       <View style={styles.card}>
-        <View style={styles.iconContainer}>
-          <FontAwesome5 name="beer" size={60} color="#fff" />
-        </View>
         <View style={styles.dataContainer}>
           <View style={styles.row}>
             <Text style={styles.TitleCuve}>{item.tankName}</Text>
@@ -72,12 +93,28 @@ const HomePrep = () => {
           <View style={{ display: 'none' }}>
             <Text style={styles.text}>{item.endDate}</Text>
           </View>
+          <Text style={styles.label}>Temps restant :</Text>
+          <Text style={styles.text}>{calculateRemainingTime(item.endDate)}</Text>
+          {gravity && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Gravité :</Text>
+              <Text style={styles.text}>{gravity}</Text>
+            </View>
+          )}
+          {temperature && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Température :</Text>
+              <Text style={styles.text}>{temperature}°C</Text>
+            </View>
+          )}
+          {tilt && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Inclinaison :</Text>
+              <Text style={styles.text}>{tilt}°</Text>
+            </View>
+          )}
         </View>
         <View style={styles.progressBar}>
-          <View style={styles.row}>
-            <Text style={styles.label}>Temps restant :</Text>
-            <Text style={styles.text}>{calculateRemainingTime(item.endDate)}</Text>
-          </View>
           <ProgressBar progress={calculateProgress(item.beginDate, item.endDate) / 100} width={null} />
         </View>
       </View>
@@ -137,12 +174,6 @@ const styles = StyleSheet.create({
       marginBottom: 10,
       position: 'relative',
     },
-    iconContainer: {
-      width: '25%',
-      marginBottom: 20,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
     dataContainer: {
       position: 'absolute',
       top: 10,
@@ -150,8 +181,8 @@ const styles = StyleSheet.create({
       backgroundColor: 'white',
       borderRadius: 10,
       padding: 10,
-      width: '65%',
-      height: '70%',
+      width: '107%',
+      height: '80%',
     },
     row: {
       flexDirection: 'row',
@@ -179,18 +210,9 @@ const styles = StyleSheet.create({
       position: 'absolute',
       bottom: 40,
       left: '5%',
-      width: '90%',
+      width: '104%',
       height: 15,
       borderRadius: 5,
-    },
-    emptyContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    emptyText: {
-      fontSize: 18,
-      fontFamily: 'Nunito-Bold',
     },
     stopButton: {
       marginLeft: 10,

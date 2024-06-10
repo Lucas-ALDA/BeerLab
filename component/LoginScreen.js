@@ -1,10 +1,21 @@
-import React from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 
 const LoginScreen = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigation = useNavigation();
+
+  const handleLogin = () => {
+    if (email === 'test@gmail.com' && password === 'test12345') {
+      navigation.navigate('Home');
+    } else {
+      Alert.alert('Erreur', 'Email ou mot de passe incorrect.');
+    }
+  };
+
   return (
     <LinearGradient colors={['#1B1B1B', '#1B1B1B', '#E8D038']} locations={[0, 0.5, 1]} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} style={styles.container}>
       <Image source={require('../assets/beerlab-logo.png')} style={styles.logo}/>
@@ -12,18 +23,30 @@ const LoginScreen = () => {
         <Text style={styles.title}>Connexion</Text>
         <View style={styles.inputView}>
           <Text style={styles.inputLabel}>Email</Text>
-          <TextInput style={styles.inputText}/>
+          <TextInput 
+            style={styles.inputText} 
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
           <View style={styles.inputLine}/>
         </View>
         <View style={styles.inputView}>
           <Text style={styles.inputLabel}>Mot de passe</Text>
-          <TextInput style={styles.inputText} secureTextEntry={true}/>
+          <TextInput 
+            style={styles.inputText} 
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={true}
+            autoCapitalize="none"
+          />
           <View style={styles.inputLine}/>
           <TouchableOpacity>
             <Text style={styles.forgotText}>Mot de passe oublié ?</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.loginBtn} onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
           <Text style={styles.loginText}>Se connecter</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Register')}>

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput, Picker} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { Picker } from '@react-native-picker/picker';
 
 const EditTankScreen = () => {
   const route = useRoute();
